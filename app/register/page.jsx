@@ -51,7 +51,19 @@ export default function Register() {
       router.push("/patient/dashboard")
     } catch (error) {
       console.error("Registration error:", error)
-      setError(error.message)
+
+      // Handle specific Firebase errors with user-friendly messages
+      if (error.code === "auth/operation-not-allowed") {
+        setError("Email/password sign-up is not enabled. Please contact the administrator.")
+      } else if (error.code === "auth/email-already-in-use") {
+        setError("This email is already registered. Please use a different email or try logging in.")
+      } else if (error.code === "auth/weak-password") {
+        setError("Password is too weak. Please use a stronger password.")
+      } else if (error.code === "auth/invalid-email") {
+        setError("Invalid email address. Please check your email and try again.")
+      } else {
+        setError(error.message || "An error occurred during registration. Please try again.")
+      }
     } finally {
       setLoading(false)
     }
@@ -60,6 +72,8 @@ export default function Register() {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true)
+      setError("")
+
       const result = await signInWithPopup(auth, googleProvider)
 
       // Check if user already exists
@@ -79,7 +93,15 @@ export default function Register() {
       router.push("/patient/dashboard")
     } catch (error) {
       console.error("Google sign-in error:", error)
-      setError(error.message)
+
+      // Handle specific Firebase errors for Google sign-in
+      if (error.code === "auth/operation-not-allowed") {
+        setError("Google sign-in is not enabled. Please contact the administrator.")
+      } else if (error.code === "auth/popup-closed-by-user") {
+        setError("Sign-in popup was closed before completing the sign-in.")
+      } else {
+        setError(error.message || "An error occurred during Google sign-in. Please try again.")
+      }
     } finally {
       setLoading(false)
     }

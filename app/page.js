@@ -1,12 +1,22 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import HeroSection from "@/components/hero-section"
-import FeatureSection from "@/components/feature-section"
-import TestimonialSection from "@/components/testimonial-section"
+"use client"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+import { useState } from "react";
+import { MenuIcon, XIcon } from "lucide-react";
+import HeroSection from "@/components/hero-section";
+import FeatureSection from "@/components/feature-section";
+import TestimonialSection from "@/components/testimonial-section";
 
 export default function Home() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <svg
@@ -23,6 +33,19 @@ export default function Home() {
           </svg>
           <h1 className="text-2xl font-bold text-emerald-600">MediConnect</h1>
         </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <button onClick={toggleMobileMenu} className="text-gray-600 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            {isMobileMenuOpen ? (
+              <XIcon className="h-6 w-6" />
+            ) : (
+              <MenuIcon className="h-6 w-6" />
+            )}
+          </button>
+        </div>
+
+        {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6">
           <Link href="/" className="font-medium hover:text-emerald-600">
             Home
@@ -37,7 +60,9 @@ export default function Home() {
             Contact
           </Link>
         </nav>
-        <div className="flex space-x-3">
+
+        {/* Auth Buttons */}
+        <div className="hidden md:flex space-x-3">
           <Link href="/login">
             <Button variant="outline">Login</Button>
           </Link>
@@ -45,6 +70,30 @@ export default function Home() {
             <Button>Register</Button>
           </Link>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="absolute top-full left-0 w-full bg-white shadow-md rounded-b-md py-4 flex flex-col items-center space-y-3 z-10">
+            <Link href="/" className="font-medium hover:text-emerald-600">
+              Home
+            </Link>
+            <Link href="/doctors" className="font-medium hover:text-emerald-600">
+              Find Doctors
+            </Link>
+            <Link href="/about" className="font-medium hover:text-emerald-600">
+              About
+            </Link>
+            <Link href="/contact" className="font-medium hover:text-emerald-600">
+              Contact
+            </Link>
+            <Link href="/login">
+              <Button variant="outline">Login</Button>
+            </Link>
+            <Link href="/register">
+              <Button>Register</Button>
+            </Link>
+          </div>
+        )}
       </header>
 
       <main>
@@ -110,5 +159,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
