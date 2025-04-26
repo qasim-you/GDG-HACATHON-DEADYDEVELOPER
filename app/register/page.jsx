@@ -3,7 +3,109 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+<<<<<<< HEAD
 import { CheckCircle, Calendar, Video, Search } from "lucide-react"
+=======
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+
+export default function Register() {
+  const router = useRouter()
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  })
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError("")
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match")
+      return
+    }
+
+    try {
+      setLoading(true)
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        name: formData.name,
+        email: formData.email,
+        role: "patient",
+        createdAt: new Date().toISOString(),
+      })
+
+      router.push("/patient/dashboard")
+    } catch (error) {
+      console.error("Registration error:", error)
+
+      // Handle specific Firebase errors with user-friendly messages
+      if (error.code === "auth/operation-not-allowed") {
+        setError("Email/password sign-up is not enabled. Please contact the administrator.")
+      } else if (error.code === "auth/email-already-in-use") {
+        setError("This email is already registered. Please use a different email or try logging in.")
+      } else if (error.code === "auth/weak-password") {
+        setError("Password is too weak. Please use a stronger password.")
+      } else if (error.code === "auth/invalid-email") {
+        setError("Invalid email address. Please check your email and try again.")
+      } else {
+        setError(error.message || "An error occurred during registration. Please try again.")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true)
+      setError("")
+
+      const result = await signInWithPopup(auth, googleProvider)
+
+      // Check if user already exists
+      const userRef = doc(db, "users", result.user.uid)
+
+      await setDoc(
+        userRef,
+        {
+          name: result.user.displayName,
+          email: result.user.email,
+          role: "patient",
+          createdAt: new Date().toISOString(),
+        },
+        { merge: true },
+      )
+
+      router.push("/patient/dashboard")
+    } catch (error) {
+      console.error("Google sign-in error:", error)
+
+      // Handle specific Firebase errors for Google sign-in
+      if (error.code === "auth/operation-not-allowed") {
+        setError("Google sign-in is not enabled. Please contact the administrator.")
+      } else if (error.code === "auth/popup-closed-by-user") {
+        setError("Sign-in popup was closed before completing the sign-in.")
+      } else {
+        setError(error.message || "An error occurred during Google sign-in. Please try again.")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+>>>>>>> 66eb2d8f1bbbc80f27f7391c3717f495f5b7d55d
 
 export default function HomePage() {
   return (
