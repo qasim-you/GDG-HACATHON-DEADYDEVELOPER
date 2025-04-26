@@ -1,7 +1,9 @@
 // components/CheckoutForm.js
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useStripePayment } from '../hooks/useStripePayment';
+import { useStripePayment } from '../hooks/useStripePayment'; 
 
 const CheckoutForm = () => {
   const stripe = useStripe();
