@@ -3,9 +3,6 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-<<<<<<< HEAD
-import { CheckCircle, Calendar, Video, Search } from "lucide-react"
-=======
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -105,7 +102,7 @@ export default function Register() {
       setLoading(false)
     }
   }
->>>>>>> 66eb2d8f1bbbc80f27f7391c3717f495f5b7d55d
+}
 
 export default function HomePage() {
   return (
