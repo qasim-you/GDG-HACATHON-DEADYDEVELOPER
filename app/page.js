@@ -1,35 +1,17 @@
-<<<<<<< HEAD
 // pages/payment.js
 import React from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from '../components/checkout';  // Assuming CheckoutForm is in components
-=======
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import HeroSection from "@/components/hero-section"
-import FeatureSection from "@/components/feature-section"
-import TestimonialSection from "@/components/testimonial-section"
->>>>>>> 3a77ee9fd74a19cef6495d7e2553d9ddc2a720f3
+import CheckoutForm from '../components/checkout'; 
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-// Load Stripe public key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const PaymentPage = () => {
   return (
-<<<<<<< HEAD
-    <div>
-      <h1>Complete Your Payment</h1>
-      <Elements stripe={stripePromise}>
-        <CheckoutForm />  {/* Payment form component */}
-      </Elements>
-    </div>
-  );
-};
-
-export default PaymentPage;
-=======
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <svg
@@ -47,18 +29,10 @@ export default PaymentPage;
           <h1 className="text-2xl font-bold text-emerald-600">MediConnect</h1>
         </div>
         <nav className="hidden md:flex space-x-6">
-          <Link href="/" className="font-medium hover:text-emerald-600">
-            Home
-          </Link>
-          <Link href="/doctors" className="font-medium hover:text-emerald-600">
-            Find Doctors
-          </Link>
-          <Link href="/about" className="font-medium hover:text-emerald-600">
-            About
-          </Link>
-          <Link href="/contact" className="font-medium hover:text-emerald-600">
-            Contact
-          </Link>
+          <Link href="/" className="font-medium hover:text-emerald-600">Home</Link>
+          <Link href="/doctors" className="font-medium hover:text-emerald-600">Find Doctors</Link>
+          <Link href="/about" className="font-medium hover:text-emerald-600">About</Link>
+          <Link href="/contact" className="font-medium hover:text-emerald-600">Contact</Link>
         </nav>
         <div className="flex space-x-3">
           <Link href="/login">
@@ -70,13 +44,18 @@ export default PaymentPage;
         </div>
       </header>
 
-      <main>
-        <HeroSection />
-        <FeatureSection />
-        <TestimonialSection />
+      {/* Main Content */}
+      <main className="flex-grow container mx-auto px-4 py-10">
+        <h1 className="text-3xl font-bold text-center mb-8">Complete Your Payment</h1>
+        <div className="max-w-md mx-auto">
+          <Elements stripe={stripePromise}>
+            <CheckoutForm />
+          </Elements>
+        </div>
       </main>
 
-      <footer className="bg-gray-100 py-12 mt-20">
+      {/* Footer */}
+      <footer className="bg-gray-100 py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -86,43 +65,22 @@ export default PaymentPage;
             <div>
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
-                <li>
-                  <Link href="/" className="text-gray-600 hover:text-emerald-600">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/doctors" className="text-gray-600 hover:text-emerald-600">
-                    Find Doctors
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/symptom-analyzer" className="text-gray-600 hover:text-emerald-600">
-                    Symptom Analyzer
-                  </Link>
-                </li>
+                <li><Link href="/" className="text-gray-600 hover:text-emerald-600">Home</Link></li>
+                <li><Link href="/doctors" className="text-gray-600 hover:text-emerald-600">Find Doctors</Link></li>
+                <li><Link href="/symptom-analyzer" className="text-gray-600 hover:text-emerald-600">Symptom Analyzer</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">For Doctors</h3>
               <ul className="space-y-2">
-                <li>
-                  <Link href="/doctor/register" className="text-gray-600 hover:text-emerald-600">
-                    Register as Doctor
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/doctor/login" className="text-gray-600 hover:text-emerald-600">
-                    Doctor Login
-                  </Link>
-                </li>
+                <li><Link href="/doctor/register" className="text-gray-600 hover:text-emerald-600">Register as Doctor</Link></li>
+                <li><Link href="/doctor/login" className="text-gray-600 hover:text-emerald-600">Doctor Login</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Contact</h3>
               <p className="text-gray-600">
-                Email: info@mediconnect.com
-                <br />
+                Email: info@mediconnect.com <br />
                 Phone: +1 (123) 456-7890
               </p>
             </div>
@@ -133,6 +91,7 @@ export default PaymentPage;
         </div>
       </footer>
     </div>
-  )
-}
->>>>>>> 3a77ee9fd74a19cef6495d7e2553d9ddc2a720f3
+  );
+};
+
+export default PaymentPage;

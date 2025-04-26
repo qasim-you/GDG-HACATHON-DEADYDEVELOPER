@@ -20,22 +20,14 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "^11.6.1",
-<<<<<<< HEAD
-    "mapbox-gl": "^3.11.1",
-=======
     "lucide-react": "^0.503.0",
->>>>>>> 3a77ee9fd74a19cef6495d7e2553d9ddc2a720f3
     "next": "15.3.1",
     "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-<<<<<<< HEAD
-    "stripe": "^18.0.0"
-=======
     "react-hook-form": "^7.56.1",
     "stripe": "^18.0.0",
     "tailwind-merge": "^3.2.0"
->>>>>>> 3a77ee9fd74a19cef6495d7e2553d9ddc2a720f3
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
