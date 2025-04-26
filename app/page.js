@@ -13,24 +13,14 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 const PaymentPage = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col justify-between">
       {/* Header */}
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-8 w-8 text-emerald-600"
-          >
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          </svg>
-          <h1 className="text-2xl font-bold text-emerald-600">MediConnect</h1>
-        </div>
+      <div className="flex items-center space-x-2">
+  <img src="/favicon.ico" alt="MediConnect Logo" className="h-10 w-10" />
+  <h1 className="text-2xl font-bold text-customBlue">MediConnect</h1>
+</div>
+
         <nav className="hidden md:flex space-x-6">
           <Link href="/" className="font-medium hover:text-emerald-600">Home</Link>
           <Link href="/doctors" className="font-medium hover:text-emerald-600">Find Doctors</Link>
@@ -47,15 +37,7 @@ const PaymentPage = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-grow container mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold text-center mb-8">Complete Your Payment</h1>
-        <div className="max-w-md mx-auto">
-          <Elements stripe={stripePromise}>
-            <CheckoutForm />
-          </Elements>
-        </div>
-      </main>
+   
 
       {/* Footer */}
       <footer className="bg-gray-100 py-12">
