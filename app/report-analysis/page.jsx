@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export default function ReportAnalysis() {
-  const [file, setFile] = useState<(null)
+  const [file, setFile] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [analysis, setAnalysis] = useState(null)
   const [error, setError] = useState(null)
