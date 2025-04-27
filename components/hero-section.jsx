@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 export default function HeroSection() {
   return (
@@ -25,13 +26,21 @@ export default function HeroSection() {
             </div>
           </div>
           <div className="md:w-1/2 flex justify-center">
-            <img
+          <Image 
+  src="/doctor.jpg"  // <-- yahan src"../" galat hai, sahi hai src="../"
+  alt="Healthcare professionals"
+  className="rounded-lg shadow-xl"
+  width={500}
+  height={400}
+/>
+
+            {/* <img
               src="/placeholder.svg?height=400&width=500"
               alt="Healthcare professionals"
               className="rounded-lg shadow-xl"
               width={500}
               height={400}
-            />
+            /> */}
           </div>
         </div>
       </div>
