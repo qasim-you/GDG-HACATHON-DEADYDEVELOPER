@@ -1,7 +1,7 @@
 // Simple Firebase setup with proper initialization
 import { initializeApp } from "firebase/app"
 import { getAuth, GoogleAuthProvider } from "firebase/auth"
-import { getFirestore } from "firebase/firestore"
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, Timestamp } from "firebase/firestore"
 
 // Firebase configuration - replace with your own config
 const firebaseConfig = {
@@ -30,6 +30,88 @@ if (typeof window !== "undefined") {
     console.log("Firebase initialized successfully")
   } catch (error) {
     console.error("Firebase initialization error:", error)
+  }
+}
+
+// Add a new appointment
+export async function addAppointment(appointmentData) {
+  try {
+    const docRef = await addDoc(collection(db, "appointments"), {
+      ...appointmentData,
+      createdAt: Timestamp.now(),
+    })
+    return { id: docRef.id, ...appointmentData }
+  } catch (error) {
+    console.error("Error adding appointment: ", error)
+    throw error
+  }
+}
+
+// Get appointments for a user
+export async function getAppointments(userId) {
+  try {
+    const appointmentsRef = collection(db, "appointments")
+    const q = query(
+      appointmentsRef,
+      where("userId", "==", userId),
+      where("date", ">=", new Date().toISOString()),
+      orderBy("date", "asc"),
+    )
+
+    const querySnapshot = await getDocs(q)
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+  } catch (error) {
+    console.error("Error getting appointments: ", error)
+    throw error
+  }
+}
+
+// Get medical history for a user
+export async function getMedicalHistory(userId) {
+  try {
+    const medicalRecordsRef = collection(db, "medicalRecords")
+    const q = query(medicalRecordsRef, where("userId", "==", userId), orderBy("date", "desc"))
+
+    const querySnapshot = await getDocs(q)
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+  } catch (error) {
+    console.error("Error getting medical records: ", error)
+    throw error
+  }
+}
+
+// Get all doctors
+export async function getDoctors() {
+  try {
+    const doctorsRef = collection(db, "doctors")
+    const querySnapshot = await getDocs(doctorsRef)
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+  } catch (error) {
+    console.error("Error getting doctors: ", error)
+    throw error
+  }
+}
+
+// Add a new doctor
+export async function addDoctor(doctorData) {
+  try {
+    const docRef = await addDoc(collection(db, "doctors"), {
+      ...doctorData,
+      createdAt: Timestamp.now(),
+    })
+    return { id: docRef.id, ...doctorData }
+  } catch (error) {
+    console.error("Error adding doctor:", error)
+    throw error
   }
 }
 
