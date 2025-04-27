@@ -6,17 +6,17 @@ import { onAuthStateChanged } from "firebase/auth"
 import { doc, getDoc } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import PatientNavbar from "@/components/patient-navbar"
-import SymptomAnalyzer from "@/components/symptom-analyzer"
-import AppointmentList from "@/components/appointment-list"
-import DoctorList from "@/components/doctor-list"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ClipboardList, FileText, Loader2 } from "lucide-react"
+import Link from "next/link"
+
 
 export default function PatientDashboard() {
   const router = useRouter()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -24,15 +24,20 @@ export default function PatientDashboard() {
         try {
           const userDoc = await getDoc(doc(db, "users", currentUser.uid))
 
-          if (userDoc.exists() && userDoc.data().role === "patient") {
-            setUser({ uid: currentUser.uid, ...userDoc.data() })
+          if (userDoc.exists()) {
+            const userData = userDoc.data()
+            if (userData.role === "patient") {
+              setUser({ uid: currentUser.uid, ...userData })
+            } else {
+              // Not a patient, redirect to login
+              router.push("/login")
+            }
           } else {
-            // Not a patient, redirect to login
-            await auth.signOut()
-            router.push("/login")
+            setError("User data not found")
           }
         } catch (error) {
           console.error("Error fetching user data:", error)
+          setError("Error retrieving user data")
         }
       } else {
         // Not logged in, redirect to login
@@ -44,10 +49,32 @@ export default function PatientDashboard() {
     return () => unsubscribe()
   }, [router])
 
+  const handleLogout = async () => {
+    try {
+      await auth.signOut()
+      router.push("/login")
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-600"></div>
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-4">
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <Button className="mt-4" onClick={() => router.push("/login")}>
+          Back to Login
+        </Button>
       </div>
     )
   }
@@ -58,89 +85,76 @@ export default function PatientDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PatientNavbar user={user} />
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto p-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold text-emerald-600">MediConnect</h1>
+          <div className="flex items-center gap-4">
+            <span>Welcome, {user.name}</span>
+            <Button variant="outline" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        </div>
+      </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-4 mt-8">
+        <h2 className="text-2xl font-bold mb-6">Patient Dashboard</h2>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Upcoming Appointments</CardTitle>
-              <CardDescription>Your scheduled appointments</CardDescription>
+            <CardHeader>
+              <CardTitle className="text-lg">Appointments</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-emerald-600">3</div>
-              <p className="text-sm text-gray-500">Next: Dr. Smith, Tomorrow 10:00 AM</p>
+              <p>You have no upcoming appointments</p>
+              <Button className="mt-4">Book Appointment</Button>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Medical Reports</CardTitle>
-              <CardDescription>Your recent medical reports</CardDescription>
+            <CardHeader>
+              <CardTitle className="text-lg">Medical Records</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-emerald-600">5</div>
-              <p className="text-sm text-gray-500">Last updated: 3 days ago</p>
+              <p>No medical records found</p>
+              <Button className="mt-4">Upload Records</Button>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Premium Status</CardTitle>
-              <CardDescription>Your subscription status</CardDescription>
+            <CardHeader>
+              <CardTitle className="text-lg">Find Doctors</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-xl font-semibold text-amber-600">Free Plan</div>
-              <Button variant="outline" size="sm" className="mt-2">
-                Upgrade to Premium
-              </Button>
+              <p>Find specialists in your area</p>
+              <Button className="mt-4">Search Doctors</Button>
             </CardContent>
           </Card>
+          <Link href="/symptom-analysis">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <ClipboardList className="mr-2" /> Symptom Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              Describe your symptoms for AI-powered analysis
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/report-analysis">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <FileText className="mr-2" /> Report Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              Upload medical reports for AI interpretation
+            </CardContent>
+          </Card>
+        </Link>
         </div>
-
-        <Tabs defaultValue="appointments" className="mt-6">
-          <TabsList className="grid grid-cols-3 mb-8">
-            <TabsTrigger value="appointments">My Appointments</TabsTrigger>
-            <TabsTrigger value="doctors">Find Doctors</TabsTrigger>
-            <TabsTrigger value="symptom-analyzer">Symptom Analyzer</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="appointments">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Appointments</CardTitle>
-                <CardDescription>Manage your upcoming and past appointments</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <AppointmentList userId={user.uid} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="doctors">
-            <Card>
-              <CardHeader>
-                <CardTitle>Find Doctors</CardTitle>
-                <CardDescription>Browse and connect with specialized doctors</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <DoctorList />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="symptom-analyzer">
-            <Card>
-              <CardHeader>
-                <CardTitle>Symptom Analyzer</CardTitle>
-                <CardDescription>Describe your symptoms to get AI-powered insights</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <SymptomAnalyzer userId={user.uid} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
       </main>
     </div>
   )
