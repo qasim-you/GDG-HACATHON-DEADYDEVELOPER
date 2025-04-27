@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ClipboardList, FileText, Loader2 } from "lucide-react"
 import Link from "next/link"
+import DoctorMap from "@/components/doctor-map"
 
 
 export default function PatientDashboard() {
@@ -131,31 +132,33 @@ export default function PatientDashboard() {
             </CardContent>
           </Card>
           <Link href="/symptom-analysis">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <ClipboardList className="mr-2" /> Symptom Analysis
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              Describe your symptoms for AI-powered analysis
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/report-analysis">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <FileText className="mr-2" /> Report Analysis
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              Upload medical reports for AI interpretation
-            </CardContent>
-          </Card>
-        </Link>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <ClipboardList className="mr-2" /> Symptom Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                Describe your symptoms for AI-powered analysis
+              </CardContent>
+            </Card>
+          </Link>
+          <Link href="/report-analysis">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="mr-2" /> Report Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                Upload medical reports for AI interpretation
+              </CardContent>
+            </Card>
+          </Link>
         </div>
       </main>
+      <DoctorMap />
+
     </div>
   )
 }
