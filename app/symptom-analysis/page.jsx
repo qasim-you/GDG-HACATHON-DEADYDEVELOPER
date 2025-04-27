@@ -17,9 +17,9 @@ export default function SymptomAnalysis() {
   const [symptoms, setSymptoms] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
 
-  const handleSubmit = async (E) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
@@ -35,7 +35,7 @@ export default function SymptomAnalysis() {
       if (!response.ok) throw new Error("Failed to analyze symptoms");
 
       const result = await response.json();
-      setAnalysisResult(result.analysis);
+      setAnalysisResult(result);
     } catch (error) {
       console.error("Error:", error);
       setError("An error occurred while analyzing symptoms. Please try again.");
@@ -50,10 +50,9 @@ export default function SymptomAnalysis() {
         <CardHeader>
           <CardTitle>Symptom Analysis</CardTitle>
           <CardDescription>
-            Describe your symptoms in detail for AI analysis.
+            Describe your symptoms in detail for AI analysis
           </CardDescription>
         </CardHeader>
-
         <form onSubmit={handleSubmit}>
           <CardContent>
             <Textarea
@@ -71,29 +70,30 @@ export default function SymptomAnalysis() {
             </Button>
           </CardFooter>
         </form>
-
         {error && (
-          <CardContent className="mt-4">
-            <Alert variant="destructive">
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          </CardContent>
+          <Alert variant="destructive">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
 
+        {/* Display Analysis Result */}
         {analysisResult && (
           <CardContent className="mt-4">
-            <h2 className="text-xl font-semibold mb-2">Analysis Result</h2>
-            <div className="space-y-2 border-2 border-gray-300 rounded-md p-4">
-              {analysisResult
-                .split("\n")
-                .map((line) => line.trim())
-                .filter((line) => line !== "" && line !== "*")
-                .map((line, index) => (
-                  <p key={index} className="text-lg">
-                    {line.startsWith("*") ? line : `* ${line}`}
-                  </p>
+            <h2 className="text-xl font-semibold">Analysis Result</h2>
+            <div className="mt-2 space-y-2 border-2 border-gray-300 rounded-md p-4">
+              <h3 className="font-semibold">Possible Conditions:</h3>
+              <ul className="list-disc pl-5">
+                {analysisResult.possibleConditions.map((condition, index) => (
+                  <li key={index} className="text-lg">
+                    {condition}
+                  </li>
                 ))}
+              </ul>
+              <h3 className="font-semibold">Recommendations:</h3>
+              <p className="text-lg">{analysisResult.recommendations}</p>
+              <h3 className="font-semibold">Urgency:</h3>
+              <p className="text-lg">{analysisResult.urgency}</p>
             </div>
           </CardContent>
         )}

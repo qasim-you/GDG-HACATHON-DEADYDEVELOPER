@@ -1,16 +1,24 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
+import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+// Initialize the Gemini API client
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
 
 export async function POST(request) {
   try {
-    const { symptoms, userId } = await request.json()
-
-    if (!symptoms) {
-      return Response.json({ error: "Symptoms are required" }, { status: 400 })
+    // Validate API key
+    if (!process.env.GOOGLE_GEMINI_API_KEY) {
+      return NextResponse.json({ error: 'GOOGLE_GEMINI_API_KEY is not set' }, { status: 500 });
     }
 
-    // Initialize Google Gemini AI
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY)
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" })
+    const { symptoms } = await request.json();
+
+    if (!symptoms) {
+      return NextResponse.json({ error: 'Symptoms are required' }, { status: 400 });
+    }
+
+    // Initialize the Gemini model (use gemini-1.5-pro)
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 
     // Create prompt for symptom analysis
     const prompt = `
@@ -29,27 +37,34 @@ export async function POST(request) {
       }
       
       Note: This is not a medical diagnosis, just an informational analysis.
-    `
+    `;
 
     // Generate response from Gemini
-    const result = await model.generateContent(prompt)
-    const response = result.response
-    const text = response.text()
-
-    // Parse the JSON response
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-      throw new Error("Failed to parse AI response")
+    let result;
+    try {
+      result = await model.generateContent(prompt);
+    } catch (error) {
+      throw new Error(`Gemini API request failed: ${error.message}`);
     }
 
-    const analysisResult = JSON.parse(jsonMatch[0])
+    if (!result || !result.response) {
+      throw new Error('Invalid response from Gemini API');
+    }
 
-    // Store the analysis in the database (implementation omitted for brevity)
-    // This would typically involve saving to Firestore
+    const text = result.response.text();
 
-    return Response.json(analysisResult)
+    // Parse the JSON response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Failed to parse AI response');
+    }
+
+    const analysisResult = JSON.parse(jsonMatch[0]);
+
+    return NextResponse.json(analysisResult);
   } catch (error) {
-    console.error("Error analyzing symptoms:", error)
-    return Response.json({ error: "Failed to analyze symptoms" }, { status: 500 })
+    console.error('Error analyzing symptoms:', error);
+    const errorMessage = error.message || 'Failed to analyze symptoms';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
