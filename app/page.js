@@ -50,13 +50,11 @@ export default function Home() {
           <Link href="/" className="font-medium hover:text-emerald-600">
             Home
           </Link>
-          <Link href="#" className="font-medium hover:text-emerald-600">
-            Find Doctors
-          </Link>
-          <Link href="#" className="font-medium hover:text-emerald-600">
+          
+          <Link href="/about" className="font-medium hover:text-emerald-600">
             About
           </Link>
-          <Link href="#" className="font-medium hover:text-emerald-600">
+          <Link href="/contact" className="font-medium hover:text-emerald-600">
             Contact
           </Link>
         </nav>

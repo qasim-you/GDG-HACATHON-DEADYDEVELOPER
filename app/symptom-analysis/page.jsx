@@ -53,7 +53,7 @@ export default function SymptomAnalysis() {
             Describe your symptoms in detail for AI analysis
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="m-4">
           <CardContent>
             <Textarea
               placeholder="Describe your symptoms here..."
@@ -64,8 +64,8 @@ export default function SymptomAnalysis() {
               required
             />
           </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+          <CardFooter >
+            <Button type="submit" className="w-full mt-6" disabled={isLoading}>
               {isLoading ? "Analyzing..." : "Analyze Symptoms"}
             </Button>
           </CardFooter>
